@@ -2,45 +2,23 @@
 
 import React from 'react'
 import { FormProvider } from "react-hook-form";
-import Button from '@/app/components/Button';
 import { useApplyForm } from './useApplyForm';
 
 const ApplyService = () => {
-  const { methods, handleSubmit, error , register, errors} = useApplyForm();
-
-   const [showIdn, setShowIdn] = React.useState(false);
-   const [isForeigner, setIsForeigner] = React.useState(false);
-   const [showPurposeOther, setShowPurposeOther] = React.useState(false);
-
-   const sendEmail = async () => {
-    try {
-      const response = await fetch('/api/sendEmail', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          data: 'Hello, this is a test email.',
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-
-      const data = await response.json();
-      console.log(data.message);
-    } catch (error) {
-      console.error('An error occurred while sending the email:', error);
-    }
-  };
+  require('dotenv').config();
+  const form = React.useRef<HTMLFormElement>(null);
+  const { methods, handleSubmit, error , register, errors} = useApplyForm(form);
+  const [showIdn, setShowIdn] = React.useState(false);
+  const [isForeigner, setIsForeigner] = React.useState(false);
+  const [showPurposeOther, setShowPurposeOther] = React.useState(false);
 
   return (
-    <div>
+    <div className='w-[100%]'>
+    <div >
               <FormProvider {...methods}>
-        <form onSubmit={handleSubmit}>
+        <form ref={form} onSubmit={handleSubmit}>
       <div>
-        <p>Bussiness Owner Details</p>
+        <p className='w-full bg-green-500 p-4 font-extrabold rounded'>Bussiness Owner Details</p>
         <div>
           <div className="pb-4">
               <h2 className='text-black font-bold'>
@@ -50,12 +28,11 @@ const ApplyService = () => {
               <div>
                 <label>
                   Applicants Citizenship 
-                </label>
+                : </label>
                 <div className="">
                 <select
       {...register("citizenShip", {
         required: false,
-        // required: "Please select a citizenship",
         onChange: (e) => {
           console.log(e.target.value);
           if (e.target.value === "rwanda") {
@@ -78,31 +55,28 @@ const ApplyService = () => {
       <option value="rwanda">Rwanda</option>
       <option value="foreigner">Foreigner</option>
     </select>
-    {/* {errors.citizenShip && <p className="text-red-800">{errors.citizenShip.message as string}</p>} */}
                 </div>
                 {showIdn ? <div>
  <label>
     Identification document number
- </label>
+ : </label>
  <input
     type="text"
     placeholder='Enter identification document number'
-    // className="input mt-2 w-full"
-    {...register("nidWidget", {
+    {...register("identificationNumber", {
       required: "This field is required",
     })}
  />
-     {errors.nidWidget && <p className="text-red-800">{errors.nidWidget.message as string}</p>}
+     {errors.identificationNumber && <p className="text-red-800">{errors.identificationNumber.message as string}</p>}
 </div> : null}
               </div>
               <div>
                 {isForeigner ? <div>
                   <label>
                     passport Number
-                  </label>
+                  : </label>
                   <input
                     type="text"
-                    // className="input mt-2 w-full"
                     {...register("passportNumber", {
                       required: true,
                     })}
@@ -111,10 +85,9 @@ const ApplyService = () => {
                 <div>
                   <label>
                     Other Name
-                  </label>
+                  : </label>
                   <input
                     type="text"
-                    // className="input mt-2 w-full"
                     {...register("otherName", {
                       required: "This field is required",
                     })}
@@ -124,10 +97,9 @@ const ApplyService = () => {
                 <div>
                   <label>
                     Surname
-                  </label>
+                  : </label>
                   <input
                     type="text"
-                    // className="input mt-2 w-full"
                     {...register("surname", {
                       required: "This field is required",
                     })}
@@ -137,11 +109,10 @@ const ApplyService = () => {
                 <div >
  <label>
     Nationality
- </label>
+ : </label>
  <input
     type="text"
     placeholder='Enter identification document number'
-    // className="input mt-2 w-full"
     {...register("nationality", {
       required: "This field is required",
     })}
@@ -150,22 +121,25 @@ const ApplyService = () => {
 </div>
 <div>
                   <label>
-                    Phone Number
+                    Phone Number :    
                   </label>
+                  <div className='flex border border-black w-[280px]'>
+                    <div>+250</div>
                   <input
                     type="text"
+                    className='border-none'
                     placeholder='Enter phone number'
                     {...register("phoneNumber")}
                   />
+                  </div>
                 </div>
                 <div>
                   <label>
                     Email Address
-                  </label>
+                  : </label>
                   <input
                     type="text"
                     placeholder='Enter Email Address'
-                    // className="input mt-2 w-full"
                     {...register("emailAddress")}
                   />
                 </div>
@@ -182,17 +156,15 @@ const ApplyService = () => {
             <div>
                   <label>
                     Location
-                  </label>
+                  : </label>
                   <input
                     type="text"
                     placeholder='Enter District'
-                    // className="input mt-2 w-full"
                     {...register("bussiness_location", {
                       required: "This field is required",
                     })}
                  />
-                                    {errors.bussiness_location && <p className="text-red-800">{errors.bussiness_location.message as string}</p>}
-                
+                 {errors.bussiness_location && <p className="text-red-800">{errors.bussiness_location.message as string}</p>}
                 </div>
             </div>
           </div>
@@ -200,22 +172,17 @@ const ApplyService = () => {
       </div>
       <div>
       <div>
-        <h2 className='text-black font-bold'>Bussiness Details</h2>
+        <h2 className='w-full bg-green-500 p-4 font-extrabold rounded'>Bussiness Details</h2>
         <div>
           <div className="pb-4">
           <div>
                 <label>
                   Bussiness Type
-                </label>
+                : </label>
                 <div className="">
                 <select
-      // className="input mt-2 w-full"
       {...register("citizenShip", {
         required: "This field is required",
-        // validate: (value: string) => {
-        //   if (!value || !value.length) return true;
-        //   return /^\d{1,3}$/.test(value ?? "");
-        // },
       })}
     >
       <option value="">Bussines Type</option>
@@ -229,14 +196,12 @@ const ApplyService = () => {
                 <div>
  <label>
     Company Name
- </label>
+ : </label>
  <input
     type="text"
     placeholder='Enter Company Name'
-    // className="input mt-2 w-full"
     {...register("companyName", {
       required: "This field is required",
-      // Add any additional validation rules as needed
     })}
  />
      {errors.companyName && <p className="text-red-800">{errors.companyName.message as string}</p>}
@@ -244,11 +209,10 @@ const ApplyService = () => {
 <div>
  <label>
     TIN number
- </label>
+ : </label>
  <input
     type="number"
     placeholder='Enter TIN number'
-    // className="input mt-2 w-full"
     {...register("tinNumber", {
       required: "TIN number is required",
       pattern: {
@@ -262,14 +226,12 @@ const ApplyService = () => {
 <div>
  <label>
     Registration Date
- </label>
+ : </label>
  <input
     type="date"
     placeholder='select date'
-    // className="input mt-2 w-full"
     {...register("registrationDate", {
       required: "This field is required",
-      // Add any additional validation rules as needed
     })}
  />
      {errors.registrationDate && <p className="text-red-800">{errors.registrationDate.message as string}</p>}
@@ -284,14 +246,12 @@ const ApplyService = () => {
                 <div>
  <label>
     Location
- </label>
+ : </label>
  <input
     type="text"
     placeholder='Enter District'
-    // className="input mt-2 w-full"
     {...register("bussinessAddressLocation", {
       required: "This field is required",
-      // Add any additional validation rules as needed
     })}
  />
      {errors.bussinessAddressLocation && <p className="text-red-800">{errors.bussinessAddressLocation.message as string}</p>}
@@ -301,13 +261,12 @@ const ApplyService = () => {
         </div>
       </div>
       <div>
-        <h1 className='text-black font-bold'>Product Information</h1>
+        <h1 className='w-full bg-green-500 p-4 font-extrabold rounded'>Product Information</h1>
 <div>                <label>
                  Purpose of importation
-                </label>
+                : </label>
                 <div className="">
                 <select
-      // className="input mt-2 w-full"
       {...register("productInfo", {
         required: "This field is required",
         onChange: (e) => {
@@ -332,10 +291,9 @@ const ApplyService = () => {
     {showPurposeOther ? <div>
  <label>
     Specify purpose of importation
- </label>
+ : </label>
  <input
     type="text"
-    // className="input mt-2 w-full"
     {...register("otherImportationPurpose", {
       required: "This field is required",
     })}
@@ -347,12 +305,10 @@ const ApplyService = () => {
 <h3 className='text-black font-bold'>Product Details</h3>
         <div>                <label>
         Product Category
-                </label>
+                : </label>
                 <div className="">
                 <select
-      // className="input mt-2 w-full"
       {...register("productCategory", {
-        // required: "This field is required",
       })}
     >
       <option value="">Select the product Category</option>
@@ -360,40 +316,34 @@ const ApplyService = () => {
       <option value="constructionMaterial">Construction Material</option>
       <option value="chemicals">Chemicals</option>
     </select>
-    {/* {errors.productCategory && <p className="text-red-800">{errors.productCategory.message as string}</p>} */}
     </div></div>
     <div>
  <label>
     Product Name
- </label>
+ : </label>
  <input
     type="text"
     placeholder='Enter Product Name'
-    // className="input mt-2 w-full"
     {...register("productName", {
-      required: "This field is required",
-      // Add any additional validation rules as needed
+      required: "This field is required"
     })}
  />
      {errors.productName && <p className="text-red-800">{errors.productName.message as string}</p>}
 </div>
 <div>
  <label>
-    Weight in (kg) </label>
+    Weight in (kg) : </label>
  <input
     type="text"
-    // className="input mt-2 w-full"
     {...register("productWeight", {
       required: false,
-      // Add any additional validation rules as needed
     })}
  />
 </div>
 <div>
  <label>
-    Description of Product </label>< br/>
+    Description of Product : </label>< br/>
  <textarea
-    // className="input mt-2 w-full"
     {...register("productDescription", {
       required: "This field is required",
     })}
@@ -402,27 +352,22 @@ const ApplyService = () => {
 </div>
 <div>                <label>
         Unit of measurement
-                </label>
+                : </label>
                 <div className="">
                 <select
-      // className="input mt-2 w-full"
-      {...register("measurementUnit", {
-        // required: "This field is required",
-      })}
+      {...register("measurementUnit")}
     >
       <option value="">SEnter unit of measurement</option>
       <option value="kgs">Kgs</option>
       <option value="tonnes">Tonnes</option>
     </select>
-    {/* {errors.measurementUnit && <p className="text-red-800">{errors.measurementUnit.message as string}</p>} */}
     </div></div>
     <div>
  <label>
-    Quantity of product(s) </label>
+    Quantity of product(s) : </label>
     <input
  type="number"
  placeholder='enter Quantity'
- // className="input mt-2 w-full"
  {...register("productQuantity", {
     required: "This field is required please provide a number greater than 0",
     min: {
@@ -434,13 +379,13 @@ const ApplyService = () => {
      {errors.productQuantity && <p className="text-red-800">{errors.productQuantity.message as string}</p>}
 </div>
 
-<button className='pt-2 pr-4 pl-4 pb-2 bg-lime-950' type='submit'>Submit</button><br/>
+<button className='pt-2 pr-6 pl-6 pb-2 bg-lime-800 rounded' type='submit'>Submit</button><br/>
       </div>
       </div>
       </div>
               </form>
       </FormProvider>
-      {/* <button className='pt-2 pr-4 pl-4 pb-2 bg-lime-950' onClick={() => sendEmail()}>send Email</button> */}
+    </div>
     </div>
   )
 }

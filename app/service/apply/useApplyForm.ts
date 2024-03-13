@@ -1,19 +1,14 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { useForm } from "react-hook-form";
+import emailjs from '@emailjs/browser';
 
 
-interface measurementType {
-  height: number;
-  weight: number;
-}
-
-export const useApplyForm = () => {
+export const useApplyForm = (form : any) => {
   const methods = useForm<any>({
     defaultValues: {
     },
   });
-  const [measurement, setMeasurement] = useState<measurementType>();
 
   const [error, setError] = useState("");
 
@@ -24,8 +19,17 @@ export const useApplyForm = () => {
     control,
   } = methods;
 
-  const handleSubmit = onSubmit((data) => {
-  console.log(data);
+  const handleSubmit =  onSubmit((data) => {
+  const templateParams = {
+    message: JSON.stringify(data),
+    email: data.emailAddress
+ };
+ emailjs.send('service_hnktdz2', 'template_al2g30n', templateParams, 'oRDzBy--ZX20-wWEp')
+ .then((response) => {
+   console.log('SUCCESS!', response.status, response.text);
+ }, (error) => {
+   console.log('FAILED...', error);
+ });
     setError("");
   });
 
@@ -37,7 +41,5 @@ export const useApplyForm = () => {
     setError,
     error,
     control,
-    measurement,
-    setMeasurement,
   };
 };
